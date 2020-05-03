@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Interfaces;
 using Core.Specifications;
+using API.Dtos;
 
 namespace API.Controllers
 {
@@ -35,17 +36,39 @@ namespace API.Controllers
 
             var products = await _productRepo.ListAsync(spec);
 
-            return Ok(products);
+            var returnProducts = products.Select(product => new ProducttoReturnDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                PictureUrl = product.PictureUrl,
+                Price = product.Price,
+                ProductBrand = product.ProductBrand.Name,
+                ProductType = product.ProductType.Name
+            }).ToList();
+
+            return Ok(returnProducts);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProducttoReturnDto>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
 
             var product = await _productRepo.GetEntityWithSpec(spec);
 
-            return Ok(product);
+            var returnProduct = new ProducttoReturnDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                PictureUrl = product.PictureUrl,
+                Price = product.Price,
+                ProductBrand = product.ProductBrand.Name,
+                ProductType = product.ProductType.Name
+            };
+
+            return Ok(returnProduct);
         }
 
         [HttpGet("brands")]
