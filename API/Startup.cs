@@ -1,3 +1,5 @@
+using API.Helper;
+using AutoMapper;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
@@ -32,6 +34,9 @@ namespace API
 
             // This is how we declare the service of generics
             services.AddScoped(typeof (IGenericRepository<>), typeof (GenericRepository<>));
+
+            // Automapper Service
+            services.AddAutoMapper(typeof(MappingProfiles));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
