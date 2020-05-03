@@ -16,10 +16,10 @@ namespace Infrastructure.Specification
 
             if (spec.Criteria != null)
             {
-                query = query.Where(spec.Criteria);
+                query = query.Where(spec.Criteria); // for eg p => p.ProductTypeId == id
             }
 
-            query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
+            query = spec.Includes.Aggregate(query, (current, include) => current.Include(include)); // All of the includes...
 
             return query;
         }
