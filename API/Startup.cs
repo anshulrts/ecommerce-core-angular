@@ -29,6 +29,9 @@ namespace API
             // Transient - Unique for every call. Created and destroyed for every access.
             // Singleton - Service lives throughout the lifetime
             services.AddScoped<IProductRepository, ProductRepository>();
+
+            // This is how we declare the service of generics
+            services.AddScoped(typeof (IGenericRepository<>), typeof (GenericRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
