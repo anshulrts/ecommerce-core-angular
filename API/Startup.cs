@@ -1,4 +1,5 @@
 using API.Errors;
+using API.Extensions;
 using API.Helper;
 using API.Middleware;
 using AutoMapper;
@@ -31,40 +32,9 @@ namespace API
             // Ordering of services doesn't matter. It matter in the case of middleware in Configure()
             services.AddControllers();
             services.AddDbContext<StoreContext>(options => options.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
-            
-            // Scoped - Service lives the the lifetime of Http request, mostly we use this.
-            // Transient - Unique for every call. Created and destroyed for every access.
-            // Singleton - Service lives throughout the lifetime
-            services.AddScoped<IProductRepository, ProductRepository>();
 
-            // This is how we declare the service of generics
-            services.AddScoped(typeof (IGenericRepository<>), typeof (GenericRepository<>));
-
-            // Automapper Service
-            services.AddAutoMapper(typeof(MappingProfiles));
-
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = actionContext =>
-                {
-                    var errors = actionContext.ModelState
-                                    .Where(e => e.Value.Errors.Count > 0)
-                                    .SelectMany(x => x.Value.Errors)
-                                    .Select(x => x.ErrorMessage).ToArray();
-
-                    var errorResponse = new ApiValidationErrorResponse
-                    {
-                        Errors = errors
-                    };
-
-                    return new BadRequestObjectResult(errorResponse);
-                };
-            });
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SkiNet API", Version = "v1" });
-            });
+            services.AddApplicationServices();
+            services.AddSwaggerDocumentation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,8 +51,7 @@ namespace API
 
             app.UseAuthorization();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SkiNet API v1"));
+            app.UseSwaggerDocumentation();
 
             app.UseEndpoints(endpoints =>
             {
