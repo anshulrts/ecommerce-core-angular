@@ -14,6 +14,9 @@ namespace Infrastructure.Specification
         {
             var query = inputQuery;
 
+            // Ordering of the query is important here
+            // i.e where > order by > skip + take
+
             if (spec.Criteria != null)
             {
                 query = query.Where(spec.Criteria); // for eg p => p.ProductTypeId == id
@@ -27,6 +30,11 @@ namespace Infrastructure.Specification
             if (spec.OrderByDescending != null)
             {
                 query = query.OrderByDescending(spec.OrderByDescending);
+            }
+
+            if (spec.IsPagingEnabled)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
             }
 
             query = spec.Includes.Aggregate(query, (current, include) => current.Include(include)); // All of the includes...
