@@ -17,6 +17,8 @@ namespace Core.Specifications
             AddInclude(x => x.ProductBrand);
             AddInclude(x => x.ProductType);
             AddOrderBy(x => x.Name);
+            ApplyPaging(productParams.PageSize * (productParams.PageIndex - 1),
+                productParams.PageSize);
 
             if (!string.IsNullOrEmpty(productParams.Sort))
             {

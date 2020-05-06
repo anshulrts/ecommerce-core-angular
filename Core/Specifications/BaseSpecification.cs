@@ -45,7 +45,7 @@ namespace Core.Specifications
             OrderByDescending = orderByDescExpression;
         }
 
-        protected void ApplyPaging(int take, int skip)
+        protected void ApplyPaging(int skip, int take)
         {
             Take = take;
             Skip = skip;
